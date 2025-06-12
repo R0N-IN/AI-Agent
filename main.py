@@ -2,6 +2,7 @@ import os
 import sys
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 
 
 load_dotenv()
@@ -13,11 +14,17 @@ try:
 except IndexError:
     print("Usage: python main.py '<your prompt here>'")
     sys.exit(1)
+messages = [
+    types.Content(role="user", parts=[types.Part(text=prompt)]),
+]
     
-print(f"Prompt: {prompt}")
 response = client.models.generate_content(
-    model='gemini-2.0-flash-001', contents = prompt)
+    model='gemini-2.0-flash-001', contents = messages)
 
-print(f"Response: {response.text}")
-print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+if "--verbose" in sys.argv:
+    print(f"User prompt: {prompt}")
+    print(f"Response: {response.text}")
+    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+    print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+else:
+    print(response.text)
