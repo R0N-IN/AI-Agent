@@ -14,13 +14,16 @@ try:
 except IndexError:
     print("Usage: python main.py '<your prompt here>'")
     sys.exit(1)
+
+# Store conversation history
 messages = [
     types.Content(role="user", parts=[types.Part(text=prompt)]),
 ]
-    
+#Define model and generate content    
 response = client.models.generate_content(
     model='gemini-2.0-flash-001', contents = messages)
 
+# Optionally print verbose output
 if "--verbose" in sys.argv:
     print(f"User prompt: {prompt}")
     print(f"Response: {response.text}")
