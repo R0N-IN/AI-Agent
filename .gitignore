@@ -1,3 +1,5 @@
 /venv
 /.env
 /tests.py
+__pycache__
+lorem.txt

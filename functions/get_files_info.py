@@ -11,7 +11,6 @@ def get_files_info(working_directory, directory=None):
         return (f'Error: Cannot list "{directory}" as it is outside the permitted working directory')
     if not os.path.isdir(path): 
         return f'Error: "{directory}" is not a directory'
-    
     dir_content = os.listdir(path)
     metadata_str = ""
     
@@ -22,5 +21,4 @@ def get_files_info(working_directory, directory=None):
             metadata_str += f"- {item_name} file_size={item_metadata.st_size} bytes, is_dir={os.path.isdir(item_path)}\n" 
         except Exception as e: 
             return (f"Error: {e}")
-    
     return metadata_str
