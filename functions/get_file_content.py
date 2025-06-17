@@ -3,9 +3,6 @@ import os
 def get_file_content(working_directory, file_path): 
     working_directory_abs_path = os.path.abspath(working_directory)
     path = os.path.abspath(os.path.join(working_directory_abs_path, file_path))
-    print("\n")
-    print(working_directory_abs_path)
-    print(path)
 
     if not path.startswith(working_directory_abs_path): 
         return (f'Error: Cannot read "{file_path}" as it is outside the permitted working directory')
