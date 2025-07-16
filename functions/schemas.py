@@ -31,7 +31,7 @@ schema_get_file_content = types.FunctionDeclaration(
 
 schema_run_python_file = types.FunctionDeclaration(
     name="run_python_file",
-    description="Run the specified python file if you don't get the path, just try to run it",
+    description="Run the specified python file if you don't get the path, just try to run it on the current working directory",
     parameters=types.Schema(
         type=types.Type.OBJECT,
         properties={
