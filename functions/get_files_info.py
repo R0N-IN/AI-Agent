@@ -2,7 +2,7 @@ import os
 
 #note: returning strings for the LLM to use them 
 def get_files_info(working_directory, directory=None):
-    dir_name = directory.strip('/')
+    dir_name = (directory or '').strip('/') or './'
     working_directory_abs_path = os.path.abspath(working_directory)
     
     full_path = os.path.abspath(os.path.join(working_directory_abs_path, dir_name))
