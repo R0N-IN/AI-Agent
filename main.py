@@ -39,34 +39,44 @@ messages = [
 response = client.models.generate_content(
     model='gemini-2.0-flash-001', contents = messages,
     config=types.GenerateContentConfig(tools=[available_functions],system_instruction=os.environ.get("system_prompt")))
+#Filter non text parts 
+text_parts = [
+    part.text for part in response.candidates[0].content.parts
+    if hasattr(part, "text") and part.text
+    ]
+
 
 #Check if the response contains function calls
 try:
     function_call_part = response.function_calls[0]
     function_call_content = response.candidates[0].content
+    for candidate in response.candidates: 
+        messages.append(candidate.content)
 except: 
     function_call_part = None
     function_call_content = None
 
 #Optionally print verbose output
+verbose = True if "--verbose" in sys.argv else False
 if(function_call_part):
-    function_call_result = call_function(function_call_part, True)
-    if function_call_result.parts[0].function_response.response:
-        if "--verbose" in sys.argv:
+    function_call_result = call_function(function_call_part, verbose)
+    messages.append(types.Content(role="user",parts=function_call_result.parts))
+
+    try: 
+        if verbose:
             print(f"User prompt: {prompt}")
-            print(f"-> {function_call_result.parts[0].function_response.response}")
-            #print(f"Response: {response.text}")
+            print("->", " ".join(text_parts))
             print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
             print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
         else:
-            function_call_result = call_function(function_call_part)
-            print(f"-> {function_call_result.parts[0].function_response.response}")
-    else: 
+            print("->", " ".join(text_parts))
+                
+    except: 
         raise Exception("Fatal Exception: No content was found on the response ")
 else:
-    if "--verbose" in sys.argv:
+    if verbose:
         print(f"User prompt: {prompt}")
-        print(f"Response: {response.text}")
+        print(f"-> {response.text}")
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
     else:
